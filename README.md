@@ -16,7 +16,7 @@ each connection ("inKbps", "outKbps"), it can be optionally
 requested via an additional parameter as indicated below:
 
 `
-http://pfSenseIP/status_gateways_json.php?key=pfsense&amp;rates=1 
+http://pfSenseIP/status_gateways_json.php?key=pfsense&rates=1 
 `
 
 To install, simply change the "key" in the code below, then drop
