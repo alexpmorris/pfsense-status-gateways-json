@@ -22,3 +22,9 @@ http://pfSenseIP/status_gateways_json.php?key=pfsense&rates=1
 To install, simply change the "key" in the code below, then drop
 the status_gateways_json.php file into your pfSense "/usr/local/www"
 directory and you are set to go! 
+
+JSON output (&rates=1 version) should look something like this:
+
+`
+{"lan":{"inKbps":18.836579043272,"outKbps":229.51290776905},"wan":{"inKbps":13.232223032712,"outKbps":30.777712136859,"name":"wan","status":"okay","monitorip":"x.x.x.x","sourceip":"x.x.x.x","delay":"10.3ms","loss":"0%"},"opt1":{"inKbps":169.05506271424,"outKbps":19.742589503826,"name":"opt1","status":"okay","monitorip":"x.x.x.x","sourceip":"x.x.x.x","delay":"25.5ms","loss":"0%"}}
+`
