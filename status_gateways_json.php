@@ -75,7 +75,8 @@ if ($_GET['rates'] == 1) {
 }
 
 foreach ($gateways_status as $a_gateway) {
-  $iface = substr(strtolower($a_gateway['name']),3);
+  $iface = strtolower($a_gateway['name']);
+  if (substr($iface,0,3) == "gw_") $iface = substr($iface,3);
   if ($_GET['rates'] == 1) {
     get_interface_rates($iface,$inKbps,$outKbps);
     $pfgateways[$iface]["inKbps"] = $inKbps;
