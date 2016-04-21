@@ -2,6 +2,7 @@
 /*
 	/usr/local/www/status_gateways_json.php
 	by Alexander Morris
+	v0.11 20160421, only "clean" interface name if starts with "gw_"
 	v0.1 20150630, for pfSense 2.x
 
 	Module retrieves pfSense 2.x Dashboard Gateway Status and Traffic
