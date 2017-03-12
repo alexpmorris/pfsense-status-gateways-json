@@ -2,6 +2,7 @@
 /*
 	/usr/local/www/status_gateways_json.php
 	by Alexander Morris
+	v0.12 20170312, fetch rates by real interface to avoid name-related issues (ie. em0, em1, em2)
 	v0.11 20160421, only "clean" interface name if starts with "gw_"
 	v0.1 20150630, for pfSense 2.x
 
@@ -59,27 +60,29 @@ $pfgateways = array();
 
 function get_interface_rates($iface, &$inKbps, &$outKbps)
 {
-  $realif = get_real_interface($iface);
-  $ifinfo1 = pfSense_get_interface_stats($realif);
+  //$realif = get_real_interface($iface);
+  $ifinfo1 = pfSense_get_interface_stats($iface);
   $tmrStart = microtime(true);
   usleep(100000);
-  $ifinfo2 = pfSense_get_interface_stats($realif);
+  $ifinfo2 = pfSense_get_interface_stats($iface);
   $totTime = microtime(true)-$tmrStart;
   $inKbps = abs($ifinfo2['inbytes']-$ifinfo1['inbytes'])*(1/$totTime)/1000*8;
   $outKbps = abs($ifinfo2['outbytes']-$ifinfo1['outbytes'])*(1/$totTime)/1000*8;
 }
 
 if ($_GET['rates'] == 1) {
-  get_interface_rates("lan",$inKbps,$outKbps);
+  get_interface_rates('em0',$inKbps,$outKbps);  // 'em0' == 'lan'
   $pfgateways["lan"]["inKbps"] = $inKbps;
   $pfgateways["lan"]["outKbps"] = $outKbps;
 }
 
+$em = 0;
 foreach ($gateways_status as $a_gateway) {
   $iface = strtolower($a_gateway['name']);
   if (substr($iface,0,3) == "gw_") $iface = substr($iface,3);
   if ($_GET['rates'] == 1) {
-    get_interface_rates($iface,$inKbps,$outKbps);
+    $em += 1;	  
+    get_interface_rates('em'.$em,$inKbps,$outKbps);
     $pfgateways[$iface]["inKbps"] = $inKbps;
     $pfgateways[$iface]["outKbps"] = $outKbps;
   }
