@@ -2,7 +2,7 @@
 /*
 	/usr/local/www/status_gateways_json.php
 	by Alexander Morris
-	v0.12 20170312, fetch rates by real interface to avoid name-related issues (ie. em0, em1, em2)
+	v0.12 20170312, fetch rates by using friendlyiface name and added more info on gateway names, interface, etc.
 	v0.11 20160421, only "clean" interface name if starts with "gw_"
 	v0.1 20150630, for pfSense 2.x
 
@@ -50,45 +50,44 @@
 if ($_GET['key'] != "pfsense") die("invalidRequest");
 
 require("interfaces.inc");
-##require("gwlb.inc");  <-- already declared in interfaces.inc
 
 $a_gateways = return_gateways_array();
-$gateways_status = array();
 $gateways_status = return_gateways_status(true);
 
 $pfgateways = array();
 
-function get_interface_rates($iface, &$inKbps, &$outKbps)
+function get_interface_rates($iface, &$inKbps, &$outKbps, &$realif)
 {
-  //$realif = get_real_interface($iface);
-  $ifinfo1 = pfSense_get_interface_stats($iface);
+  $realif = get_real_interface($iface);
+  $ifinfo1 = pfSense_get_interface_stats($realif);
   $tmrStart = microtime(true);
   usleep(100000);
-  $ifinfo2 = pfSense_get_interface_stats($iface);
+  $ifinfo2 = pfSense_get_interface_stats($realif);
   $totTime = microtime(true)-$tmrStart;
   $inKbps = abs($ifinfo2['inbytes']-$ifinfo1['inbytes'])*(1/$totTime)/1000*8;
   $outKbps = abs($ifinfo2['outbytes']-$ifinfo1['outbytes'])*(1/$totTime)/1000*8;
 }
 
 if ($_GET['rates'] == 1) {
-  get_interface_rates('em0',$inKbps,$outKbps);  // 'em0' == 'lan'
+  get_interface_rates('lan',$inKbps,$outKbps,$realif);
   $pfgateways["lan"]["inKbps"] = $inKbps;
   $pfgateways["lan"]["outKbps"] = $outKbps;
+  $pfgateways["lan"]["interface"] = $realif;
 }
 
-$em = 0;
 foreach ($gateways_status as $a_gateway) {
-  $iface = strtolower($a_gateway['name']);
-  if (substr($iface,0,3) == "gw_") $iface = substr($iface,3);
+  $iface = $a_gateways[$a_gateway['name']]['friendlyiface'];
   if ($_GET['rates'] == 1) {
-    $em += 1;	  
-    get_interface_rates('em'.$em,$inKbps,$outKbps);
+    get_interface_rates($iface,$inKbps,$outKbps,$realif);
     $pfgateways[$iface]["inKbps"] = $inKbps;
     $pfgateways[$iface]["outKbps"] = $outKbps;
   }
+  $realif = $a_gateways[$a_gateway['name']]['interface'];
   $status = $a_gateway['status'];
   if ($status == "none") $status = "okay";
-  $pfgateways[$iface]['name'] = $iface;
+  $pfgateways[$iface]['interface'] = $realif;
+  $pfgateways[$iface]['friendlyiface'] = $iface;
+  $pfgateways[$iface]['name'] = $a_gateway['name'];
   $pfgateways[$iface]['status'] = $status;
   $pfgateways[$iface]['monitorip'] = $a_gateway['monitorip'];
   $pfgateways[$iface]['sourceip'] = $a_gateway['srcip'];
