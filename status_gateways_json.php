@@ -2,6 +2,7 @@
 /*
 	/usr/local/www/status_gateways_json.php
 	by Alexander Morris
+	v0.13 20210325, added "gatewayip" for each interface
 	v0.12 20170312, fetch rates by using friendlyiface name and added more info on gateway names, interface, etc.
 	v0.11 20160421, only "clean" interface name if starts with "gw_"
 	v0.1 20150630, for pfSense 2.x
@@ -91,6 +92,7 @@ foreach ($gateways_status as $a_gateway) {
   $pfgateways[$iface]['status'] = $status;
   $pfgateways[$iface]['monitorip'] = $a_gateway['monitorip'];
   $pfgateways[$iface]['sourceip'] = $a_gateway['srcip'];
+  $pfgateways[$iface]['gatewayip'] = $a_gateways[$a_gateway['name']]['gateway'];
   $pfgateways[$iface]['delay'] = $a_gateway['delay'];
   $pfgateways[$iface]['loss'] = $a_gateway['loss'];
 }
