@@ -34,20 +34,26 @@ JSON output (&rates=1 version) should look something like this:
     "wan": {
         "inKbps": 132.32223032712,
         "outKbps": 307.77712136859,
-        "name": "wan",
+        "interface": "em1",
+        "friendlyiface": "wan",
+        "name": "GW_WAN",
         "status": "okay",
         "monitorip": "x.x.x.x",
         "sourceip": "x.x.x.x",
+        "gatewayip": "x.x.x.x",
         "delay": "10.3ms",
         "loss": "0%"
     },
     "opt1": {
         "inKbps": 1690.5506271424,
         "outKbps": 197.42589503826,
-        "name": "opt1",
+        "interface": "em2",
+        "friendlyiface": "opt1",
+        "name": "GW_OPT1",
         "status": "okay",
         "monitorip": "x.x.x.x",
         "sourceip": "x.x.x.x",
+        "gatewayip": "x.x.x.x",
         "delay": "25.5ms",
         "loss": "0%"
     }
