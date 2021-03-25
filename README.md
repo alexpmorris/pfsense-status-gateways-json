@@ -29,7 +29,8 @@ JSON output (&rates=1 version) should look something like this:
 {
     "lan": {
         "inKbps": 188.36579043272,
-        "outKbps": 2295.1290776905
+        "outKbps": 2295.1290776905,
+        "interface": "em0"
     },
     "wan": {
         "inKbps": 132.32223032712,
